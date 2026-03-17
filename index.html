@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Listen To The Man</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0E1D2E;
+color:white;
+margin:0;
+}
+
+header{
+padding:15px;
+background:#081523;
+text-align:center;
+}
+
+.progressBar{
+height:6px;
+background:#ff6400;
+width:0%;
+transition:.4s;
+}
+
+.screen{
+display:none;
+padding:40px;
+max-width:1000px;
+margin:auto;
+}
+
+.active{
+display:block;
+}
+
+h1,h2{
+text-align:center;
+}
+
+button{
+background:#ff6400;
+border:none;
+padding:12px 24px;
+color:white;
+font-size:18px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+margin-top:40px;
+}
+
+.word{
+display:inline-block;
+background:#ff6400;
+padding:12px 20px;
+border-radius:8px;
+margin:10px;
+cursor:grab;
+}
+
+.dropzone{
+border:3px dashed white;
+padding:25px;
+margin-top:20px;
+min-height:60px;
+font-size:18px;
+}
+
+.correct{
+border-color:#00ff9d;
+color:#00ff9d;
+}
+
+.wrong{
+border-color:#ff3b3b;
+color:#ff3b3b;
+}
+
+input{
+padding:10px;
+font-size:18px;
+width:250px;
+margin-top:10px;
+}
+
+.inputWrong{
+border:3px solid red;
+}
+
+.inputCorrect{
+border:3px solid #00ff9d;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+align-items:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h2>Interactive Lesson</h2>
+
+<div class="progressBar" id="progressBar"></div>
+
+</header>
+
+<!-- ========================= -->
+<!-- TELA 1 INTRO -->
+<!-- ========================= -->
+
+<div class="screen active">
+
+<h1><!-- EDIT HERE: LESSON TITLE -->
+Listen To The Man
+</h1>
+
+<audio controls>
+<!-- EDIT HERE: AUDIO -->
+<source src="v1.mp3">
+</audio>
+
+<p>Listen and prepare for the activities.</p>
+
+<div class="nav">
+<div></div>
+<button onclick="next()">Start</button>
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- TELA 2 DRAG -->
+<!-- ========================= -->
+
+<div class="screen dragActivity">
+
+<h2>Drag the word to the correct definition</h2>
+
+<div class="wordBank">
+
+<!-- EDIT HERE WORDS -->
+<div class="word" draggable="true">grow</div>
+<div class="word" draggable="true">fate</div>
+<div class="word" draggable="true">annoy</div>
+<div class="word" draggable="true">challenge</div>
+
+</div>
+
+<!-- EDIT HERE DEFINITION -->
+<div class="dropzone" data-answer="grow">
+
+become bigger over time
+
+</div>
+
+<br>
+
+<button onclick="checkDrag(this)">Check</button>
+<button onclick="resetDrag()">Reset</button>
+
+<div class="nav">
+<button onclick="prev()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- TELA 3 AUDIO + INPUT -->
+<!-- ========================= -->
+
+<div class="screen">
+
+<div class="grid">
+
+<div>
+
+<audio controls>
+<!-- EDIT HERE AUDIO -->
+<source src="v2.mp3">
+</audio>
+
+</div>
+
+<div>
+
+<p>Type the correct words</p>
+
+<!-- EDIT ANSWERS -->
+
+<input data-answer="grow"><br>
+<input data-answer="fate"><br>
+<input data-answer="annoy"><br>
+<input data-answer="challenge"><br>
+
+</div>
+
+</div>
+
+<div class="nav">
+<button onclick="prev()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- TELA 4 DISCUSSION -->
+<!-- ========================= -->
+
+<div class="screen">
+
+<h2>Discussion Time</h2>
+
+<!-- EDIT QUESTIONS -->
+
+<p>What things annoy you?</p>
+<input data-answer="annoy">
+
+<p>What challenges do students face?</p>
+<input data-answer="challenge">
+
+<p>Where did you grow up?</p>
+<input data-answer="grow">
+
+<p>Do you believe in fate?</p>
+<input data-answer="fate">
+
+<div class="nav">
+<button onclick="prev()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- SCREENS 5-13 PLACEHOLDERS -->
+<!-- COPY STRUCTURE ABOVE -->
+<!-- ========================= -->
+
+<div class="screen"><h2>Activity 5</h2></div>
+<div class="screen"><h2>Activity 6</h2></div>
+<div class="screen"><h2>Activity 7</h2></div>
+<div class="screen"><h2>Activity 8</h2></div>
+<div class="screen"><h2>Activity 9</h2></div>
+<div class="screen"><h2>Activity 10</h2></div>
+<div class="screen"><h2>Activity 11</h2></div>
+<div class="screen"><h2>Activity 12</h2></div>
+<div class="screen"><h2>Activity 13</h2></div>
+
+
+
+<script>
+
+let current=0
+const screens=document.querySelectorAll(".screen")
+const progress=document.getElementById("progressBar")
+
+function updateProgress(){
+
+let percent=((current+1)/screens.length)*100
+progress.style.width=percent+"%"
+
+}
+
+function show(){
+
+screens.forEach(s=>s.classList.remove("active"))
+screens[current].classList.add("active")
+updateProgress()
+
+}
+
+function next(){
+
+if(current<screens.length-1){
+
+current++
+show()
+
+}
+
+}
+
+function prev(){
+
+if(current>0){
+
+current--
+show()
+
+}
+
+}
+
+
+
+updateProgress()
+
+
+
+/* ========================= */
+/* DRAG SYSTEM */
+/* ========================= */
+
+let draggedWord=null
+
+document.querySelectorAll(".word").forEach(word=>{
+
+word.addEventListener("dragstart",()=>{
+
+draggedWord=word
+
+})
+
+})
+
+const zone=document.querySelector(".dropzone")
+
+if(zone){
+
+zone.addEventListener("dragover",e=>e.preventDefault())
+
+zone.addEventListener("drop",()=>{
+
+zone.textContent=draggedWord.textContent
+
+})
+
+}
+
+
+
+function checkDrag(btn){
+
+const container=btn.closest(".dragActivity")
+const zone=container.querySelector(".dropzone")
+
+if(zone.textContent.trim()===zone.dataset.answer){
+
+zone.classList.add("correct")
+
+}else{
+
+zone.classList.add("wrong")
+
+}
+
+}
+
+function resetDrag(){
+
+location.reload()
+
+}
+
+
+
+/* ========================= */
+/* INPUT CHECK */
+/* ========================= */
+
+document.querySelectorAll("input").forEach(input=>{
+
+input.addEventListener("input",()=>{
+
+let correct=input.dataset.answer.toLowerCase()
+let value=input.value.toLowerCase()
+
+if(value===correct){
+
+input.classList.remove("inputWrong")
+input.classList.add("inputCorrect")
+
+}else{
+
+input.classList.remove("inputCorrect")
+input.classList.add("inputWrong")
+
+}
+
+})
+
+})
+
+
+
+/* ========================= */
+/* RANDOMIZE WORDS */
+/* ========================= */
+
+function shuffleWords(){
+
+document.querySelectorAll(".wordBank").forEach(bank=>{
+
+let words=[...bank.children]
+
+words.sort(()=>Math.random()-0.5)
+
+words.forEach(w=>bank.appendChild(w))
+
+})
+
+}
+
+shuffleWords()
+
+</script>
+
+</body>
+</html>
